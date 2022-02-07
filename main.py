@@ -33,11 +33,12 @@ def image_mars():
                            text="Вот она какая, красная планета", url_photo=url_photo)
 
 
-# @app.route('/')
-# @app.route('/index')
-# def index():
-#     user = "Ученик Яндекс.Лицея"
-#     return render_template('index.html')
+@app.route('/promotion_image')
+def promotion_image():
+    url_photo = os.path.join(static, 'img', 'mars.png')
+    texts = ["Мы сделаем обитаемыми безжизненые планеты!", "И начнем марса!", 'Присоединяйся']
+    return render_template('promotion_image.html', title="Привет, Марс!", h1_text="Жди нас, Марс!",
+                           url_photo=url_photo, texts=texts)
 
 
 if __name__ == '__main__':
