@@ -2,5 +2,9 @@
 
 {% block content %}
 <p>{{text}}</p>
-<img src={{url_photo}}>
+{% if flag %}
+<img src="../static/img/1.png">
+{% else %}
+<img src="../static/img/2.png">
+{% endif %}
 {% endblock %}

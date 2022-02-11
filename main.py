@@ -23,14 +23,14 @@ def image_mars(title: str):
 def training(prof: str):
     flag = True if "инженер" in prof.split() or "строитель" in prof.split() else False
     text = ""
-    url_photo = ""
+    url_photo = os.path.join(static, 'img', 'mars.png')
     if flag:
         text = "Инженерные тренажеры"
-        url_photo = os.path.join(static, "img", "Инженерные_тренажеры.png")
+        url_photo = os.path.join(static, "img", "1.png")
     else:
         text = "Научные симуляторы"
-        url_photo = os.path.join(static, "img", "Научные_симуляторы.png")
-    return render_template('training.html', text=text, url_photo=url_photo)
+        url_photo = os.path.join(static, "img", "2.png")
+    return render_template('training.html', text=text, url_photo=url_photo, flag=flag)
 
 
 if __name__ == '__main__':
