@@ -13,9 +13,9 @@ def start():
     return "Миссия Колонизация Марса"
 
 
-# @app.route('/index')
-# def index():
-#     return "И на Марсе будут яблони цвести!"
+@app.route('/index')
+def index():
+    return "И на Марсе будут яблони цвести!"
 
 
 @app.route('/promotion')
@@ -39,6 +39,18 @@ def promotion_image():
     texts = ["Мы сделаем обитаемыми безжизненые планеты!", "И начнем марса!", 'Присоединяйся']
     return render_template('promotion_image.html', title="Привет, Марс!", h1_text="Жди нас, Марс!",
                            url_photo=url_photo, texts=texts)
+
+
+@app.route('/astronaut_selection')
+def astronaut_selection():
+    return render_template('astronaut_selection.html')
+
+
+@app.route('/choice/<planet_name>')
+def planet_name(planet_name: str):
+    h1_text = f"Моё предложение {planet_name}"
+    texts = [f'Это планета {planet_name}', f"Наоборот {planet_name[::-1]}"]
+    return render_template('choice.html', h1_text=h1_text, texts=texts)
 
 
 if __name__ == '__main__':
