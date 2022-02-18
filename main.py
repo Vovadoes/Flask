@@ -3,9 +3,19 @@ import os.path
 from flask import Flask
 from flask import render_template
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired
+
 app = Flask(__name__)
 
 static = os.path.join('static')
+
+
+# class LoginForm(FlaskForm):
+#     astro_id = StringField('Логин', validators=[DataRequired()])
+#     astro_password = PasswordField('Пароль', validators=[DataRequired()])
+#     submit = SubmitField('Войти')
 
 
 # @app.route('/')
@@ -31,6 +41,13 @@ def training(prof: str):
         text = "Научные симуляторы"
         url_photo = os.path.join(static, "img", "2.png")
     return render_template('training.html', text=text, url_photo=url_photo, flag=flag)
+
+
+@app.route('/list_prof/<list>')
+def list_prof(list):
+    professions = ['Первая профессия', 'Вторая профессия', 'Третья профессия']
+    h2_text = ''
+    return render_template('list_prof.html', professions=professions, h2_text=h2_text, tag=list)
 
 
 if __name__ == '__main__':

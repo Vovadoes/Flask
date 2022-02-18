@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>{{text}}</p>
+<p><h2>{{h2_text}}</h2></p>
+<{{tag}}>
+    {% for i in professions%}
+    <p>
+    <li>{{i}}</li>
+    </p>
+    {% endfor %}
+</{{tag}}>
+{% endblock %}
