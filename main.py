@@ -12,12 +12,6 @@ app = Flask(__name__)
 static = os.path.join('static')
 
 
-# class LoginForm(FlaskForm):
-#     astro_id = StringField('Логин', validators=[DataRequired()])
-#     astro_password = PasswordField('Пароль', validators=[DataRequired()])
-#     submit = SubmitField('Войти')
-
-
 # @app.route('/')
 # def start():
 #     return "Миссия Колонизация Марса"
@@ -48,6 +42,23 @@ def list_prof(list):
     professions = ['Первая профессия', 'Вторая профессия', 'Третья профессия']
     h2_text = ''
     return render_template('list_prof.html', professions=professions, h2_text=h2_text, tag=list)
+
+
+@app.route('/answer')
+@app.route('/auto_answer')
+def answer():
+    d = {'title': 'Mars One',
+              'surname': 'V',
+              'name': 'D',
+              'education': 'среднее',
+              'profession': 'радист',
+              'sex': 'male',
+              'motivation': 'Пожить пожить жить жить',
+              'ready': 'True'}
+    return render_template('auto_answer.html', title=d["title"], surname=d["surname"],
+                           name=d["name"],
+                           education=d["education"], profession=d["profession"], sex=d["sex"],
+                           motivation=d["motivation"], ready=d["ready"])
 
 
 if __name__ == '__main__':
