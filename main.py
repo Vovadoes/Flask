@@ -1,13 +1,22 @@
 import os.path
 
-from flask import Flask, url_for
+from flask import Flask, flash, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
+from os.path import join, dirname, realpath
 from flask import render_template
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired
+# from flask_wtf import FlaskForm
+# from wtforms import StringField, PasswordField, BooleanField, SubmitField
+# from wtforms.validators import DataRequired
+
+UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static/uploads')
+
+# UPLOAD_FOLDER = '/static/path/to/the/uploads'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'JPEG', 'ifif'}
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 static = os.path.join('static')
 
@@ -69,7 +78,7 @@ def distribution():
 
 @app.route('/table/<string:gender>/<int:age>')
 def table(gender: str, age: int):
-    photo= ''
+    photo = ''
     if age >= 18:
         photo = url_for('static', filename='img/3.png')
     else:
@@ -83,9 +92,41 @@ def table(gender: str, age: int):
     elif gender == 'female':
         r = min(255 * age / 70, 255)
     r, g, b = map(round, (r, g, b))
-    print(r, g, b)
     color = '%02x%02x%02x' % (r, g, b)
     return render_template('table.html', url=photo, color=color)
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/gallery/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('upload_file', name=filename))
+    else:
+        lst = []
+        for name in os.listdir(app.config['UPLOAD_FOLDER']):
+            filename, file_extension = os.path.splitext(join(app.config['UPLOAD_FOLDER'], name))
+            file_extension = file_extension[1::]
+            if file_extension in ALLOWED_EXTENSIONS:
+                lst.append(url_for('static', filename=f'uploads/{name}'))
+        print(lst)
+        return render_template('gallery.html', photos=lst)
 
 
 if __name__ == '__main__':
