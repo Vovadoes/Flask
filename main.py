@@ -24,7 +24,7 @@ def main():
     user2 = User()
     user2.name = 'vova'
     user2.surname = 'Scott'
-    user2.age =15
+    user2.age = 15
     user2.position = 'user'
     user2.speciality = 'research engineer'
     user2.address = 'module_2'
@@ -51,7 +51,25 @@ def main():
     user4.email = 'dima@mars.org'
     db_sess.add(user4)
 
+    job = Jobs()
+    job.job = 'deployment of residential modules 1 and 2'
+    job.work_size = 15
+    job.is_finished = False
+    db_sess.add(job)
+
     db_sess.commit()
+
+    job: Jobs = db_sess.query(Jobs).all()[0]
+
+    captain: User = db_sess.query(User).filter(User.position == 'captain')[0]
+
+    job.team_leader = captain.id
+
+    for user in db_sess.query(User).all():
+        user.id_job = job.id
+
+    db_sess.commit()
+
     # app.run()
 
 
