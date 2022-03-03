@@ -2,6 +2,8 @@ import datetime
 import sqlalchemy
 from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
+from data import db_session
+from .users import User
 
 
 class Jobs(SqlAlchemyBase):
@@ -20,3 +22,9 @@ class Jobs(SqlAlchemyBase):
     # collaborators = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
 
+    def get_team_leader(self):
+        db_sess = db_session.create_session()
+        return db_sess.query(User).filter(User.id == self.team_leader).first()
+
+    def get_users_names(self):
+        return ',\n'.join([f'{collaborator.name} {collaborator.surname}' for collaborator in self.collaborators])
