@@ -3,7 +3,6 @@
 {% block content %}
 <h1>Главная</h1>
 {% if current_user.is_authenticated %}
-<p>Зравствуйте {{ current_user.name }}</p>
 <a class="navbar-brand" href="/logout">Выйти</a>
 {% else %}
 <p>

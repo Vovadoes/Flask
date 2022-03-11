@@ -17,6 +17,9 @@
     </nav>
 </header>
 <h4>И на Марсе будут яблони цвести!</h4>
+{% if current_user.is_authenticated %}
+<h4>Зравствуйте {{ current_user.name }}</h4>
+{% endif %}
 <!-- Begin page content -->
 <main role="main" class="container">
     {% block content %}{% endblock %}
