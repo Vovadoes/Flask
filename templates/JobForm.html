@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Добавить работу</h1>
+    <form action="" method="post">
+        {{ forms.csrf_token }}
+        {{ forms.hidden_tag() }}
+        {% for form in forms %}
+            <p>
+                {{ form.label }}
+                <br>
+                {{ form(class="form-control") }}
+                <br>
+                {% for error in form.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+        {% endfor %}
+        {{ message }}
+    </form>
+{% endblock %}

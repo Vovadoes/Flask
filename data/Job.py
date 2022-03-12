@@ -6,12 +6,14 @@ from data import db_session
 from .users import User
 
 
-class Jobs(SqlAlchemyBase):
+class Job(SqlAlchemyBase):
     __tablename__ = 'jobs'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    team_leader = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    team_leader = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"),
+                                    nullable=True)
+    # team_leader = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     job = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     work_size = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     # position = sqlalchemy.Column(sqlalchemy.String, nullable=True)
@@ -27,4 +29,5 @@ class Jobs(SqlAlchemyBase):
         return db_sess.query(User).filter(User.id == self.team_leader).first()
 
     def get_users_names(self):
-        return ',\n'.join([f'{collaborator.name} {collaborator.surname}' for collaborator in self.collaborators])
+        return ',\n'.join(
+            [f'{collaborator.name} {collaborator.surname}' for collaborator in self.collaborators])

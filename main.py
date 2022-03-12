@@ -1,20 +1,26 @@
 import datetime
 
 from flask import Flask, request, make_response, session, render_template
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_wtf import CSRFProtect
 from werkzeug.utils import redirect
 
 from data import db_session
+from data.Job import Job
 from data.db_session import global_init
 from data.users import User
+from forms.JobForm import JobForm
 from forms.RegisterForm import RegisterForm
 from forms.UserForm import LoginForm
+
+csrf = CSRFProtect()
 
 app = Flask(__name__)
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
     days=365
 )
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+csrf.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -97,7 +103,42 @@ def logout():
 
 @app.route('/')
 def main():
-    return render_template("main.html")
+    form = JobForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        # if db_sess.query(User).filter(User.email == form.email.data).first():
+        #     return render_template('register.html', title='Регистрация',
+        #                            form=form,
+        #                            message="Такой пользователь уже есть")
+        if current_user.is_authenticated:
+            return render_template('main.html', title='Регистрация', message="Необходимо войти")
+        job = Job()
+        job.team_leader = current_user
+        job.job = form.job.data
+        job.work_size = form.work_size.data
+        job.is_finished = form.is_finished.data
+        db_sess.add(job)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('main.html', title='Регистрация', form=form)
+
+
+@app.route('/add_job', methods=['GET', 'POST'])
+def add_job():
+    forms = JobForm()
+    if forms.validate_on_submit():
+        db_sess = db_session.create_session()
+        if not current_user.is_authenticated:
+            return redirect('/')
+        job = Job()
+        job.team_leader = current_user.get_id()
+        job.job = forms.job.data
+        job.work_size = forms.work_size.data
+        job.is_finished = forms.is_finished.data
+        db_sess.add(job)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('JobForm.html', title='Регистрация', forms=forms)
 
 
 if __name__ == '__main__':

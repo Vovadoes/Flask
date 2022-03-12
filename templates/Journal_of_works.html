@@ -1,26 +1,27 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Записи в блоге</h1>
-{% for job in jobs%}
-<div>
-    <h2>Action # {{job.id}}</h2>
-    <table border="1" bordercolor="grey" width="800px">
-        <tr>
-            <th>Title of activity</th>
-            <th>Team leader</th>
-            <th>Duration</th>
-            <th>List of collaborators</th>
-            <th>Is finished</th>
-        </tr> <!--ряд с ячейками заголовков-->
-        <tr>
-            <td>{{job.job}}</td>
-            <td>{{job.get_team_leader().name}} {{job.get_team_leader().surname}}</td>
-            <td>{{job.work_size}} hours</td>
-            <td>{{job.get_users_names()}}</td>
-            <td>{{job.is_finished}}</td>
-        </tr> <!--ряд с ячейками тела таблицы-->
-    </table>
-</div>
-{% endfor %}
+    <h1>Записи в блоге</h1>
+    {% for job in jobs %}
+        <div>
+            <h2>Action # {{ job.id }}</h2>
+            <table border="1" bordercolor="grey" width="800px">
+                <tr>
+                    <th>Title of activity</th>
+                    <th>Team leader</th>
+                    <th>Duration</th>
+                    <th>List of collaborators</th>
+                    <th>Is finished</th>
+                </tr>
+                <!--ряд с ячейками заголовков-->
+                <tr>
+                    <td>{{ job.job }}</td>
+                    <td>{{ job.get_team_leader().name }} {{ job.get_team_leader().surname }}</td>
+                    <td>{{ job.work_size }} hours</td>
+                    <td>{{ job.get_users_names()}}</td>
+                    <td>{{ job.is_finished }}</td>
+                </tr>
+                <!--ряд с ячейками тела таблицы-->
+            </table>
+        </div>
+    {% endfor %}
 {% endblock %}
