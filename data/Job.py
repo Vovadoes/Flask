@@ -4,6 +4,7 @@ from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
 from data import db_session
 from .users import User
+from .users import association_table
 
 
 class Job(SqlAlchemyBase):
@@ -20,7 +21,7 @@ class Job(SqlAlchemyBase):
     # speciality = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     start_date = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True, default=datetime.datetime.now)
     # end_date = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
-    collaborators = orm.relation('User')
+    collaborators = orm.relationship('User', secondary=association_table, back_populates='jobs')
     # collaborators = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
 
@@ -29,5 +30,5 @@ class Job(SqlAlchemyBase):
         return db_sess.query(User).filter(User.id == self.team_leader).first()
 
     def get_users_names(self):
-        return ',\n'.join(
-            [f'{collaborator.name} {collaborator.surname}' for collaborator in self.collaborators])
+        return ', '.join([f'{collaborator.name} {collaborator.surname}' for collaborator in
+                           self.collaborators])

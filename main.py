@@ -6,10 +6,10 @@ from flask_wtf import CSRFProtect
 from werkzeug.utils import redirect
 
 from data import db_session
-from data.Job import Job
 from data.db_session import global_init
 from data.users import User
-from forms.JobForm import JobForm
+from data.Job import Job
+from forms.JobForm import JobFormNoValidate, JobFormValidate
 from forms.RegisterForm import RegisterForm
 from forms.UserForm import LoginForm
 
@@ -103,44 +103,37 @@ def logout():
 
 @app.route('/')
 def main():
-    form = JobForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        # if db_sess.query(User).filter(User.email == form.email.data).first():
-        #     return render_template('register.html', title='Регистрация',
-        #                            form=form,
-        #                            message="Такой пользователь уже есть")
-        if current_user.is_authenticated:
-            return render_template('main.html', title='Регистрация', message="Необходимо войти")
-        job = Job()
-        job.team_leader = current_user
-        job.job = form.job.data
-        job.work_size = form.work_size.data
-        job.is_finished = form.is_finished.data
-        db_sess.add(job)
-        db_sess.commit()
-        return redirect('/')
-    return render_template('main.html', title='Регистрация', form=form)
+    db_sess = db_session.create_session()
+    jobs = db_sess.query(Job).all()
+    return render_template("main.html", jobs=jobs)
 
 
 @app.route('/add_job', methods=['GET', 'POST'])
 def add_job():
-    forms = JobForm()
-    if forms.validate_on_submit():
+    forms_no_validate = JobFormNoValidate()
+    forms_validate = JobFormValidate()
+    if forms_no_validate.validate_on_submit():
         db_sess = db_session.create_session()
         if not current_user.is_authenticated:
             return redirect('/')
         job = Job()
         job.team_leader = current_user.get_id()
-        job.job = forms.job.data
-        job.work_size = forms.work_size.data
-        job.is_finished = forms.is_finished.data
+        job.job = forms_validate.job.data
+        job.work_size = forms_validate.work_size.data
+        job.is_finished = forms_no_validate.is_finished.data
         db_sess.add(job)
         db_sess.commit()
         return redirect('/')
-    return render_template('JobForm.html', title='Регистрация', forms=forms)
+    return render_template('JobForm.html', title='Регистрация', forms_no_validate=forms_no_validate,
+                           forms_validate=forms_validate)
 
 
 if __name__ == '__main__':
     global_init("db/db.db")
+    # db_sess = db_session.create_session()
+    # job = db_sess.query(Job).all()[0]
+    # user = db_sess.query(User).all()[0]
+    # print(job.collaborators)
+    # job.collaborators.append(user)
+    # db_sess.commit()
     app.run(port=8080, host='127.0.0.1')

@@ -2,13 +2,28 @@
 {% block content %}
     <h1>Добавить работу</h1>
     <form action="" method="post">
-        {{ forms.csrf_token }}
-        {{ forms.hidden_tag() }}
-        {% for form in forms %}
+        {{ forms_validate.csrf_token }}
+        {{ forms_validate.hidden_tag() }}
+        {% for form in forms_validate %}
             <p>
                 {{ form.label }}
                 <br>
                 {{ form(class="form-control") }}
+                <br>
+                {% for error in form.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+        {% endfor %}
+        {{ forms_no_validate.csrf_token }}
+        {{ forms_no_validate.hidden_tag() }}
+        {% for form in forms_no_validate %}
+            <p>
+                {{ form.label }}
+                <br>
+                {{ form }}
                 <br>
                 {% for error in form.errors %}
                     <p class="alert alert-danger" role="alert">

@@ -1,12 +1,18 @@
 import datetime
+
 import sqlalchemy
 from flask_login import UserMixin
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from .db_session import SqlAlchemyBase
 
-
 from sqlalchemy import orm
+
+association_table = sqlalchemy.Table('association', SqlAlchemyBase.metadata,
+    sqlalchemy.Column('users_id', sqlalchemy.ForeignKey('users.id')),
+    sqlalchemy.Column('jobs_id', sqlalchemy.ForeignKey('jobs.id'))
+)
 
 
 class User(SqlAlchemyBase, UserMixin):
@@ -25,7 +31,7 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                       default=datetime.datetime.now)
-    job_id = orm.relation("Job", back_populates='collaborators')
+    jobs = orm.relationship("Job", secondary=association_table, back_populates='collaborators')
     news = orm.relation("News", back_populates='user')
 
     def set_password(self, password):
