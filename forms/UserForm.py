@@ -5,10 +5,10 @@ from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
     email = wtforms.EmailField('Почта', validators=[DataRequired()])
-    age = wtforms.IntegerField("Возраст", validators=[DataRequired()])
-    position = wtforms.StringField("position", validators=[DataRequired()])
-    speciality = wtforms.StringField("Специальность", validators=[DataRequired()])
-    address = wtforms.StringField("Адрес", validators=[DataRequired()])
+    age = wtforms.IntegerField("Возраст")
+    position = wtforms.StringField("position")
+    speciality = wtforms.StringField("Специальность")
+    address = wtforms.StringField("Адрес")
     password = wtforms.PasswordField('Пароль', validators=[DataRequired()])
     remember_me = wtforms.BooleanField('Запомнить меня', )
     submit = wtforms.SubmitField('Войти')
