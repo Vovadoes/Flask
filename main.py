@@ -3,6 +3,7 @@ import datetime
 from flask import Flask, request, make_response, session, render_template
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf import CSRFProtect
+from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
 from data import db_session
@@ -129,6 +130,7 @@ def add_job():
 
 
 @app.route('/change_job/<int:job_id>', methods=['GET', 'POST'])
+@login_required
 def change_job(job_id: int):
     db_sess = db_session.create_session()
     forms_no_validate = JobFormNoValidate()
@@ -153,6 +155,21 @@ def change_job(job_id: int):
         return render_template('JobForm.html', title='Регистрация',
                                forms_no_validate=forms_no_validate, forms_validate=forms_validate)
 
+
+@app.route('/job_delete/<int:job_id>', methods=['GET', 'POST'])
+@login_required
+def job_delete(job_id):
+    db_sess = db_session.create_session()
+    job = db_sess.query(Job).filter(Job.id == job_id).first()
+    if job.team_leader is None or current_user.get_id() != str(job.team_leader):
+        print("job user error")
+        print(f"{job.team_leader=} {current_user.get_id()=}")
+    if job:
+        db_sess.delete(job)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
 
 
 if __name__ == '__main__':

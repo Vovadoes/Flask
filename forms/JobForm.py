@@ -12,4 +12,4 @@ class JobFormValidate(FlaskForm):
 
 class JobFormNoValidate(FlaskForm):
     is_finished = wtforms.BooleanField('is_finished')
-    submit = wtforms.SubmitField('Войти')
+    submit = wtforms.SubmitField('Добавить')
