@@ -128,23 +128,23 @@ def add_job():
                            forms_validate=forms_validate)
 
 
-@app.route('/add_job/<int:job_id>', methods=['GET', 'POST'])
+@app.route('/change_job/<int:job_id>', methods=['GET', 'POST'])
 def change_job(job_id: int):
     db_sess = db_session.create_session()
     forms_no_validate = JobFormNoValidate()
     forms_validate = JobFormValidate()
     job = db_sess.query(Job).filter(Job.id == job_id).first()
-    if job.team_leader is None or current_user.get_id() != job.team_leader:
-        print("job error")
+    if job.team_leader is None or current_user.get_id() != str(job.team_leader):
+        print("job user error")
         print(f"{job.team_leader=} {current_user.get_id()=}")
     if forms_no_validate.validate_on_submit():
-        db_sess = db_session.create_session()
         if not current_user.is_authenticated:
             return redirect('/')
         job.job = forms_validate.job.data
         job.work_size = forms_validate.work_size.data
         job.is_finished = forms_no_validate.is_finished.data
         db_sess.commit()
+        print(f'Job with id {job.id} has been successfully changed.')
         return redirect('/')
     else:
         forms_validate.job.data = job.job
@@ -152,6 +152,7 @@ def change_job(job_id: int):
         forms_no_validate.is_finished.data = job.is_finished
         return render_template('JobForm.html', title='Регистрация',
                                forms_no_validate=forms_no_validate, forms_validate=forms_validate)
+
 
 
 if __name__ == '__main__':
