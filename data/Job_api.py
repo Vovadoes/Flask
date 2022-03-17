@@ -46,3 +46,12 @@ def get_job(job_id: int):
                         'is_finished'))
             }
         )
+
+
+@blueprint.route('/api/jobs/<string:job_id>')
+def get_job_string(job_id: str):
+    return jsonify(
+        {
+            'job': None
+        }
+    )
