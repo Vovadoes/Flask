@@ -6,7 +6,7 @@ from flask_wtf import CSRFProtect
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
-from data import db_session
+from data import db_session, Job_api
 from data.db_session import global_init
 from data.users import User
 from data.Job import Job
@@ -174,10 +174,5 @@ def job_delete(job_id):
 
 if __name__ == '__main__':
     global_init("db/db.db")
-    # db_sess = db_session.create_session()
-    # job = db_sess.query(Job).all()[0]
-    # user = db_sess.query(User).all()[0]
-    # print(job.collaborators)
-    # job.collaborators.append(user)
-    # db_sess.commit()
+    app.register_blueprint(Job_api.blueprint)
     app.run(port=8080, host='127.0.0.1')

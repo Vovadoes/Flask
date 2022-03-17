@@ -1,5 +1,8 @@
 import datetime
 import sqlalchemy
+from flask_login import UserMixin
+from sqlalchemy_serializer import SerializerMixin
+
 from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
 from data import db_session
@@ -7,7 +10,7 @@ from .users import User
 from .users import association_table
 
 
-class Job(SqlAlchemyBase):
+class Job(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'jobs'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
