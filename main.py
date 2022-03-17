@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Flask, request, make_response, session, render_template
+from flask import Flask, request, make_response, session, render_template, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf import CSRFProtect
 from werkzeug.exceptions import abort
@@ -14,14 +14,14 @@ from forms.JobForm import JobFormNoValidate, JobFormValidate
 from forms.RegisterForm import RegisterForm
 from forms.UserForm import LoginForm
 
-csrf = CSRFProtect()
+# csrf = CSRFProtect()
 
 app = Flask(__name__)
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
     days=365
 )
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-csrf.init_app(app)
+# csrf.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -170,6 +170,11 @@ def job_delete(job_id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 if __name__ == '__main__':

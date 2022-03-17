@@ -1,9 +1,40 @@
-from requests import get
+from random import randint
 
-print(get('http://127.0.0.1:8080/api/jobs').json())
+from requests import get, post
 
-print(get('http://127.0.0.1:8080/api/jobs/1').json())
+# корректный ввод
+print(post('http://localhost:8080/api/jobs',
+           json={'team_leader': 1,
+                 'job': 'Текст новости',
+                 'work_size': 1,
+                 'collaborators': [1],
+                 'is_finished': False}).json())
 
-print(get('http://127.0.0.1:8080/api/jobs/1000').json())
+# получаем все работы
 
-print(get('http://127.0.0.1:8080/api/jobs/qwe').json())
+js = get('http://localhost:8080/api/jobs').json()
+
+number = randint(0, 65535)
+while number in [i["id"] for i in js["jobs"]]:
+    number = randint(0, 65535)
+# корректный ввод
+print(post('http://localhost:8080/api/jobs',
+           json={'id': number,
+                 'team_leader': 1,
+                 'job': 'Текст новости',
+                 'work_size': 1,
+                 'collaborators': [1],
+                 'is_finished': False}).json())
+
+# неверный ввод
+print(post('http://localhost:8080/api/jobs',
+           json={'id': 1,
+                 'team_leader': False,
+                 'job': 'Текст новости',
+                 'work_size': 1,
+                 'collaborators': '',
+                 'is_finished': 2131232}).json())
+
+# нехватка данных
+print(post('http://localhost:8080/api/jobs',
+           json={}).json())
